@@ -1,4 +1,3 @@
-/////////////////////////////////////////////////////////////////GLOBAL VARIABLES
 const cardContainer = document.querySelector(".card-container");
 let pair = [];
 let firstCard;
@@ -8,18 +7,109 @@ let secondKey;
 let count = 0;
 let numFliped = 0;
 
-/////////////////////////////////////////////////////////////////EVENT LISTENER FOR THE CLICK EVENT TO FlIP CARDS
+/**
+ * Why?
+ * ... Write some documentation ...
+ * @param {Array} pair 
+ * @param {string} dataNick 
+ * @param {HTMLElement} target 
+ */
+function onPairLength(pair, dataNick, target) {
+  if (pair.length === 0) {
+    pair.push(dataNick);
+    firstCard = target.parentElement;
+    firstCard.classList.toggle("flip");
+    firstKey = target.dataset.key;
+  } else if (pair.length === 1) {
+    pair.push(dataNick);
+    secondCard = target.parentElement;
+    secondCard.classList.toggle("flip");
+    secondKey = target.dataset.key;
+  }
+}
 
-cardContainer.addEventListener("click", function (e) {
-  /////////////////////////////////////////////////////////////////LOCAL VARIABLES
+/**
+ * No params are being passed b/c of all the globals.
+ * google "js polluting global scope".
+ */
+function onMatchKey() {
+  let timer = setInterval(function () {
+    firstCard.classList.toggle("flip");
+    secondCard.classList.toggle("flip");
+    clearInterval(timer);
+  }, 1000);
+  pair = [];
+}
 
-  const dataNick = e.target.dataset.nick;
-  const name = e.target.dataset.name;
+/**
+ * Why?
+ * ... Write some documentation ...
+ * @param {HTMLCollection} children 
+ */
+function onNoMatch(children) {
+  numFliped = 2;
+  let timer = setInterval(function () {
+    firstCard.classList.toggle("flip");
+    secondCard.classList.toggle("flip");
+    for (var child of children) {
+      child.setAttribute("data-fliped", "false");
+    }
+    pair = [];
+    numFliped = 0;
+    clearInterval(timer);
+  }, 1000);
+}
+
+/**
+ * Why?
+ * Write why choices were made.
+ * Don't write what or how. Reading the code will tell us that.
+ * @param {HTMLCollection} children 
+ * @param {string} pair0 
+ * @param {string} pair1 
+ */
+function runMatchLogic(children, pair0, pair1) {
+  const noMatch = [
+    pair.length === 2,
+    pair0 !== pair1,
+    pair0 !== "undefined",
+    pair1 !== "undefined"
+  ];
+
+  const matchKey = [
+    pair0 === pair1,
+    pair0 !== "undefined",
+    pair1 !== "undefined",
+    firstKey === secondKey
+  ];
+
+  const match = [
+    pair0 === pair1,
+    pair0 !== "undefined",
+    pair1 !== "undefined"
+  ];
+
+  if (noMatch.every(item => item)) {
+    onNoMatch(children);
+  } else if (matchKey.every(item => item)) {
+    onMatchKey();
+  } else if (match.every(item => item)) {
+    pair = [];
+  }
+}
+
+/**
+ * Why?
+ * Because we need to take action when the user clicks.
+ * Take what actions?
+ * ... Write some documentation ...
+ * @param {s} e 
+ */
+function onClick (e) {
   const card = e.target;
-  const parent = e.target.parentElement.parentElement;
-  const children = parent.children;
-
-  /////////////////////////////////////////////////////////////////CONDITIONALS TO ONLY LET THE CARDS BE SELECTED TO FLIP
+  const dataNick = card.dataset.nick;
+  const name = card.dataset.name;
+  const parent = card.parentElement.parentElement;
 
   if (name === "container" && dataNick === undefined) {
     return;
@@ -27,83 +117,25 @@ cardContainer.addEventListener("click", function (e) {
     return;
   }
 
-  /////////////////////////////////////////////////////////////////CONDITIONAL TO ONLY ALLOW 2 CARDS TO BE SHOWING AT ONCE
-
   if (numFliped >= 2) {
     return;
   }
 
-  /////////////////////////////////////////////////////////////////CONDITIONALS TO ONLY LET TWO BE SELECTED AT ONCE
-
   card.parentElement.setAttribute("data-fliped", "true");
 
-  /////////////////////////////////////////////////////////////////CONDITIONALS TO PUSH DATA ATTRIBUTES TO AN ARRAY IF ZERO OR ONLY ONE CARD IS SHOWING
+  onPairLength(pair, dataNick, card);
 
-  if (pair.length === 0) {
-    pair.push(dataNick);
-    firstCard = e.target.parentElement;
-    firstCard.classList.toggle("flip");
-    firstKey = e.target.dataset.key;
-  } else if (pair.length === 1) {
-    pair.push(dataNick);
-    secondCard = e.target.parentElement;
-    secondCard.classList.toggle("flip");
-    secondKey = e.target.dataset.key;
-  }
+  runMatchLogic(parent.children, pair[0], pair[1]);
+}
 
-  /////////////////////////////////////////////////////////////////CONDITIONAL TO CHECK TO SEE IF THOSE TWO IMAGES SHOWING ARE NOT MATCHES, IF NOT, THEN RESET THE PAIR ARRAY
+cardContainer.addEventListener("click", onClick);
 
-  if (
-    pair.length === 2 &&
-    pair[0] !== pair[1] &&
-    pair[0] !== "undefined" &&
-    pair[1] !== "undefined"
-  ) {
-    numFliped = 2;
-    let timer = setInterval(function () {
-      firstCard.classList.toggle("flip");
-      secondCard.classList.toggle("flip");
-      for (var child of children) {
-        child.setAttribute("data-fliped", "false");
-      }
-      pair = [];
-      numFliped = 0;
-      clearInterval(timer);
-    }, 1000);
-  }
-
-  /////////////////////////////////////////////////////////////////CONDITIONAL TO PREVENT THE USER FROM DOUBLE CLICKING THE SAME IMAGE
-  else if (
-    pair[0] === pair[1] &&
-    pair[0] !== "undefined" &&
-    pair[1] !== "undefined" &&
-    firstKey === secondKey
-  ) {
-    let timer = setInterval(function () {
-      firstCard.classList.toggle("flip");
-      secondCard.classList.toggle("flip");
-      clearInterval(timer);
-    }, 1000);
-    pair = [];
-  }
-
-  /////////////////////////////////////////////////////////////////CONDITIONAL TO CHECK IF BOTH IMAGES MATCH AND ARE UNIQUE KEY VALUES
-  else if (
-    pair[0] === pair[1] &&
-    pair[0] !== "undefined" &&
-    pair[1] !== "undefined"
-  ) {
-    pair = [];
-  }
-});
-
-///////////////////////////////////////////////////////////////TIMER
 
 const difficutlyBtns = document.querySelectorAll(".difficulty");
+
 difficutlyBtns.forEach((item) => {
   item.addEventListener("click", (e) => {
-    ////////////////////////////////////////////////////////////////SETTING UP VARIABLES FOR SESSION STORAGE
-    let easyScore = sessionStorage.getItem("easyScore");
+        let easyScore = sessionStorage.getItem("easyScore");
     let mediumScore = sessionStorage.getItem("mediumScore");
     let hardScore = sessionStorage.getItem("hardScore");
     let topTime = document.querySelector(".top-time");
@@ -129,35 +161,31 @@ difficutlyBtns.forEach((item) => {
         topTime.innerText = `TOP TIME: ${hardScore}sec`;
       }
     }
-    ////////////////////////////////////////////////////////////////DISABLING THE ABILITY TO CLICK THE BUTTONS AND RESTART TIMER
-    const diff1 = document.querySelector(".diff1");
+        const diff1 = document.querySelector(".diff1");
     const diff2 = document.querySelector(".diff2");
     const diff3 = document.querySelector(".diff3");
 
     diff1.style.pointerEvents = "none";
     diff2.style.pointerEvents = "none";
     diff3.style.pointerEvents = "none";
-    ////////////////////////////////////////////////////////////////MAIN TIMER VARIABLES
-    const clock = document.getElementById("timer-label");
+        const clock = document.getElementById("timer-label");
     const clockBtn = document.querySelector(".timer-btn");
     let TIME_LIMIT;
     let timePassed = 0;
     let timeLeft = TIME_LIMIT;
-    ////////////////////////////////////////////////////////////SETTING UP COUNTDOWN CLOCK TIMES BASED ON DIFFICULTY BUTTONS
-
+    
     if (e.target.classList.contains("easy")) {
-      TIME_LIMIT = 20;
-      clock.innerText = "00:20";
+      TIME_LIMIT = 25;
+      clock.innerText = "00:25";
     } else if (e.target.classList.contains("medium")) {
-      TIME_LIMIT = 45;
-      clock.innerText = "00:45";
+      TIME_LIMIT = 50;
+      clock.innerText = "00:50";
     } else if (e.target.classList.contains("hard")) {
-      TIME_LIMIT = 60;
-      clock.innerText = "01:00";
+      TIME_LIMIT = 75;
+      clock.innerText = "01:15";
     }
     clockBtn.classList.add("starting");
-    ////////////////////////////////////////////////////////////TIMER INTERVAL BEING CALLED EVERY SECOND
-
+    
     const timer = setInterval(() => {
       // The amount of time passed increments by one
       timePassed = timePassed += 1;
@@ -165,8 +193,7 @@ difficutlyBtns.forEach((item) => {
       // The time left span is updated
       clock.innerText = `00:${timeLeft}`;
 
-      ////////////////////////////////////////////////////////////////IF USER HAS WON
-      const body = document.querySelector("body");
+            const body = document.querySelector("body");
       const winner = document.createElement("div");
       const cards = document.querySelectorAll(".card-box");
 
@@ -181,11 +208,9 @@ difficutlyBtns.forEach((item) => {
         if (card.classList.contains("flip")) flipCount++;
       }
       if (flipCount === cards.length) {
-        /////////////////////ADD WINNING VIDEO AND CLEAR THE MAIN TIMER
-        body.prepend(winner);
+                body.prepend(winner);
         clearInterval(timer);
-        /////////////////////UPDATE SESSION STORAGE
-        let time = timePassed;
+                let time = timePassed;
 
         if (e.target.classList.contains("easy")) {
           if (easyScore === null || time < easyScore) {
@@ -205,18 +230,14 @@ difficutlyBtns.forEach((item) => {
             topTime.innerText = `TOP TIME: ${time}sec`;
           }
         }
-        /////////////////////START THE WINNING INTERVAL TIMER TO REMOVE THE VIDEO AFTER 2 SECONDS
-        const winnerTimer = setInterval(() => {
+                const winnerTimer = setInterval(() => {
           winnerCount++;
           if (winnerCount === 2) {
-            ///////////////////RESETING THE BODY TO HAVE NO CARDS AND REMOVE THE TIMER DANGER CLASS
-            cardContainer.innerHTML = "";
+                        cardContainer.innerHTML = "";
             clockBtn.classList.remove("danger");
-            ///////////////////REMOVING THE WINNING VIDEO
-            winner.remove();
+                        winner.remove();
             clearInterval(winnerTimer);
-            /////////////////////RESET THE BUTTONS AND STYLES BACK TO NORMAL
-            diff1.style.pointerEvents = "auto";
+                        diff1.style.pointerEvents = "auto";
             diff2.style.pointerEvents = "auto";
             diff3.style.pointerEvents = "auto";
             clockBtn.classList.add("btn-outline-light");
@@ -226,15 +247,13 @@ difficutlyBtns.forEach((item) => {
         }, 850);
       }
 
-      ////////////////////////////////////////////////////////////////IF USER HAS 10 SECONDS LEFT TURN TIMER TO RED
-      if (timeLeft < 10) {
+            if (timeLeft < 10) {
         clock.innerText = `00:0${timeLeft}`;
         clockBtn.classList.remove("starting");
         clockBtn.classList.add("danger");
       }
 
-      ////////////////////////////////////////////////////////////////IF USER HAS LOST
-      const loser = document.createElement("div");
+            const loser = document.createElement("div");
       let loserCount = 0;
 
       loser.innerHTML =
@@ -245,21 +264,17 @@ difficutlyBtns.forEach((item) => {
         clearInterval(timer);
         body.prepend(loser);
 
-        //////////////////////////////////////////////////////////////TIMER TO REMOVE THE LOST VIDEO AFTER A SECOND
-
+        
         const loserTimer = setInterval(() => {
           loserCount++;
-          ///////////////////RESETING THE BODY TO HAVE NO cards
-          cardContainer.innerHTML = "";
-          ///////////////////REMOVING THE LOSING VIDEO AND CLEARING THE TIMER
-          if (loserCount === 2) {
+                    cardContainer.innerHTML = "";
+                    if (loserCount === 2) {
             loser.remove();
             clearInterval(loserTimer);
           }
         }, 850);
 
-        ////////////////////////////////////////////////////////////////REENABLING THE CLICK FUNCTIONALITY OF BUTTONS
-        diff1.style.pointerEvents = "auto";
+                diff1.style.pointerEvents = "auto";
         diff2.style.pointerEvents = "auto";
         diff3.style.pointerEvents = "auto";
         clockBtn.classList.remove("danger");
@@ -271,14 +286,12 @@ difficutlyBtns.forEach((item) => {
   });
 });
 
-///////////////////////////////////////////////////////////////EASY/MEDIUM/HARD BUTTONS LOADING ON CLICK FUNCTION
 
 const cardLoader = function (e) {
   let testing;
   let inputs = [];
 
-  //////////////////////////////////////////////EASY BUTTON LOOP
-  if (e.target.classList.contains("easy")) {
+    if (e.target.classList.contains("easy")) {
     cardContainer.innerText = "";
     for (var i = 1; i < 5; i++) {
       inputs.push({
@@ -298,8 +311,7 @@ const cardLoader = function (e) {
         </div>`,
       });
     }
-    //////////////////////////////////////////////MEDIUM BUTTON LOOP
-  } else if (e.target.classList.contains("medium")) {
+      } else if (e.target.classList.contains("medium")) {
     cardContainer.innerText = "";
     for (var i = 1; i < 9; i++) {
       inputs.push({
@@ -319,8 +331,7 @@ const cardLoader = function (e) {
           </div>`,
       });
     }
-    //////////////////////////////////////////////HARD BUTTON LOOP
-  } else if (e.target.classList.contains("hard")) {
+      } else if (e.target.classList.contains("hard")) {
     cardContainer.innerText = "";
     for (var i = 1; i < 13; i++) {
       inputs.push({
@@ -341,8 +352,7 @@ const cardLoader = function (e) {
       });
     }
   }
-  //////////////////////////////////////////////RANDOMIZATION LOOP
-  let m;
+    let m;
   let t;
   let j;
 
@@ -356,8 +366,7 @@ const cardLoader = function (e) {
     inputs[j] = t;
   }
 
-  //////////////////////////////////////////////POPULATE LOOP
-  for (var i = 0; i < inputs.length; i++) {
+    for (var i = 0; i < inputs.length; i++) {
     let div = document.createElement("div");
     div.classList.add("card-box");
     div.setAttribute("data-name", "box");
@@ -366,7 +375,6 @@ const cardLoader = function (e) {
   }
 };
 
-//////////////////////////////////////////////CLICK EVENT IMPLEMENTING THE CARDLOADER FUNCTION
 const easyBtn = document.querySelector(".easy");
 easyBtn.addEventListener("click", cardLoader);
 const mediumBtn = document.querySelector(".medium");
