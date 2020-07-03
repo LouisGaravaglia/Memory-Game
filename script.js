@@ -155,13 +155,18 @@ const difficutlyBtns = document.querySelectorAll(".difficulty");
  * 
  * @param {string} body 
  */
-function losingVideo(body){
+function losingVideo(body, diff1, diff2, diff3, clockBtn){
   const loser = document.createElement("div");
   loser.innerHTML =
     "<video src='images/loser.mp4' autoplay poster='posterimage.jpg'></video>";
   loser.classList.add("loser");
   body.prepend(loser);
   cardContainer.innerHTML = "";
+  diff1.style.pointerEvents = "auto";
+  diff2.style.pointerEvents = "auto";
+  diff3.style.pointerEvents = "auto";
+  clockBtn.classList.remove("danger");
+  clockBtn.classList.remove("starting");
   setTimeout(() => {
       loser.remove();  
   }, 1700);
@@ -254,70 +259,130 @@ difficutlyBtns.forEach((item) => {
     }
     clockBtn.classList.add("starting");
 
-    const timer = setInterval(() => {
+
+    function clockTicking(diff1, diff2, diff3, ){
       // The amount of time passed increments by one
       timePassed = timePassed += 1;
       timeLeft = TIME_LIMIT - timePassed;
-      // The time left span is updated
-      clock.innerText = `00:${timeLeft}`;
-
       const body = document.querySelector("body");
-     
       const cards = document.querySelectorAll(".card-box");
-
       let flipCount = 0;
+
+      setInterval(() => {
+        clock.innerText = `00:${timeLeft}`;
+     
+ 
+       for (var card of cards) {
+         if (card.classList.contains("flip")) flipCount++;
+       }
+       if (flipCount === cards.length) {
+        
+         winningVideo(body, diff1, diff2, diff3, clockBtn, clock);
+         clearInterval(timer);
+         let time = timePassed;
+ 
+         if (diffClass.contains("easy")) {
+           if (easyScore === null || time < easyScore) {
+             sessionStorage.setItem("easyScore", `${time}`);
+             topTime.innerText = `TOP TIME: ${time}sec`;
+           }
+         }
+         if (diffClass.contains("medium")) {
+           if (mediumScore === null || time < mediumScore) {
+             sessionStorage.setItem("mediumScore", `${time}`);
+             topTime.innerText = `TOP TIME: ${time}sec`;
+           }
+         }
+         if (diffClass.contains("hard")) {
+           if (hardScore === null || time < hardScore) {
+             sessionStorage.setItem("hardScore", `${time}`);
+             topTime.innerText = `TOP TIME: ${time}sec`;
+           }
+         }
+ 
+       }
+ 
+       if (timeLeft < 10) {
+         clock.innerText = `00:0${timeLeft}`;
+         clockBtn.classList.remove("starting");
+         clockBtn.classList.add("danger");
+       }
+ 
+ 
+ 
+       if (timeLeft === 0) {
+         clearInterval(timer);
+         losingVideo(body, diff1, diff2, diff3, clockBtn);
+         timePassed = 0;
+         timeLeft = TIME_LIMIT;
+       }
+ 
+ 
+     }, 1000);
+
+    }
+
+    // const timer = setInterval(() => {
+    //   // The amount of time passed increments by one
+    //   timePassed = timePassed += 1;
+    //   timeLeft = TIME_LIMIT - timePassed;
+    //   // The time left span is updated
+    //   clock.innerText = `00:${timeLeft}`;
+
+    //   const body = document.querySelector("body");
+     
+    //   const cards = document.querySelectorAll(".card-box");
+
+    //   let flipCount = 0;
     
 
-      for (var card of cards) {
-        if (card.classList.contains("flip")) flipCount++;
-      }
-      if (flipCount === cards.length) {
+    //   for (var card of cards) {
+    //     if (card.classList.contains("flip")) flipCount++;
+    //   }
+    //   if (flipCount === cards.length) {
        
-        winningVideo(body, diff1, diff2, diff3, clockBtn, clock);
-        clearInterval(timer);
-        let time = timePassed;
+    //     winningVideo(body, diff1, diff2, diff3, clockBtn, clock);
+    //     clearInterval(timer);
+    //     let time = timePassed;
 
-        if (diffClass.contains("easy")) {
-          if (easyScore === null || time < easyScore) {
-            sessionStorage.setItem("easyScore", `${time}`);
-            topTime.innerText = `TOP TIME: ${time}sec`;
-          }
-        }
-        if (diffClass.contains("medium")) {
-          if (mediumScore === null || time < mediumScore) {
-            sessionStorage.setItem("mediumScore", `${time}`);
-            topTime.innerText = `TOP TIME: ${time}sec`;
-          }
-        }
-        if (diffClass.contains("hard")) {
-          if (hardScore === null || time < hardScore) {
-            sessionStorage.setItem("hardScore", `${time}`);
-            topTime.innerText = `TOP TIME: ${time}sec`;
-          }
-        }
+    //     if (diffClass.contains("easy")) {
+    //       if (easyScore === null || time < easyScore) {
+    //         sessionStorage.setItem("easyScore", `${time}`);
+    //         topTime.innerText = `TOP TIME: ${time}sec`;
+    //       }
+    //     }
+    //     if (diffClass.contains("medium")) {
+    //       if (mediumScore === null || time < mediumScore) {
+    //         sessionStorage.setItem("mediumScore", `${time}`);
+    //         topTime.innerText = `TOP TIME: ${time}sec`;
+    //       }
+    //     }
+    //     if (diffClass.contains("hard")) {
+    //       if (hardScore === null || time < hardScore) {
+    //         sessionStorage.setItem("hardScore", `${time}`);
+    //         topTime.innerText = `TOP TIME: ${time}sec`;
+    //       }
+    //     }
 
-      }
+    //   }
 
-      if (timeLeft < 10) {
-        clock.innerText = `00:0${timeLeft}`;
-        clockBtn.classList.remove("starting");
-        clockBtn.classList.add("danger");
-      }
+    //   if (timeLeft < 10) {
+    //     clock.innerText = `00:0${timeLeft}`;
+    //     clockBtn.classList.remove("starting");
+    //     clockBtn.classList.add("danger");
+    //   }
 
 
 
-      if (timeLeft === 0) {
-        clearInterval(timer);
-        losingVideo(body);
-        diff1.style.pointerEvents = "auto";
-        diff2.style.pointerEvents = "auto";
-        diff3.style.pointerEvents = "auto";
-        clockBtn.classList.remove("danger");
-        clockBtn.classList.remove("starting");
-        timePassed = 0;
-        timeLeft = TIME_LIMIT;
-      }
-    }, 1000);
+    //   if (timeLeft === 0) {
+    //     clearInterval(timer);
+    //     losingVideo(body, diff1, diff2, diff3, clockBtn);
+    //     timePassed = 0;
+    //     timeLeft = TIME_LIMIT;
+    //   }
+
+
+    // }, 1000);
   });
 });
 
