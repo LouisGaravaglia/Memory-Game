@@ -204,7 +204,6 @@ function winningVideo(body, diff1, diff2, diff3, clockBtn, clock) {
 
 
 function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardScore, TIME_LIMIT){
-
   const body = document.querySelector("body");
   const cards = document.querySelectorAll(".card-box");
   let timePassed = 0;
@@ -245,12 +244,14 @@ function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardSco
          topTime.innerText = `TOP TIME: ${time}sec`;
        }
      }
+
      if (diffClass.contains("medium")) {
        if (mediumScore === null || time < mediumScore) {
          sessionStorage.setItem("mediumScore", `${time}`);
          topTime.innerText = `TOP TIME: ${time}sec`;
        }
      }
+
      if (diffClass.contains("hard")) {
        if (hardScore === null || time < hardScore) {
          sessionStorage.setItem("hardScore", `${time}`);
@@ -266,15 +267,12 @@ function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardSco
      clockBtn.classList.add("danger");
    }
 
-
-
    if (timeLeft === 0) {
      clearInterval(timer);
      losingVideo(body, diff1, diff2, diff3, clockBtn);
-     timePassed = 0;
-     timeLeft = TIME_LIMIT;
+    //  timePassed = 0;
+    //  timeLeft = TIME_LIMIT;
    }
-
 
  }, 1000);
 
@@ -283,13 +281,12 @@ function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardSco
 
 difficutlyBtns.forEach((item) => {
   item.addEventListener("click", (e) => {
-    let easyScore = sessionStorage.getItem("easyScore");
-    let mediumScore = sessionStorage.getItem("mediumScore");
-    let hardScore = sessionStorage.getItem("hardScore");
-    let topTime = document.querySelector(".top-time");
-    let diffClass = e.target.classList;
+    const easyScore = sessionStorage.getItem("easyScore");
+    const mediumScore = sessionStorage.getItem("mediumScore");
+    const hardScore = sessionStorage.getItem("hardScore");
+    const topTime = document.querySelector(".top-time");
+    const diffClass = e.target.classList;
     const clock = document.getElementById("timer-label");
-   
     let TIME_LIMIT;
 
     if (diffClass.contains("easy")) {
@@ -319,18 +316,6 @@ difficutlyBtns.forEach((item) => {
         topTime.innerText = `TOP TIME: ${hardScore}sec`;
       }
     }
-
-    // TIME WERE SET TO 25, 50, 75
-    // if (diffClass.contains("easy")) {
-    //   TIME_LIMIT = 1;
-    //   clock.innerText = "00:25";
-    // } else if (diffClass.contains("medium")) {
-    //   TIME_LIMIT = 50; 
-    //   clock.innerText = "00:50";
-    // } else if (diffClass.contains("hard")) {
-    //   TIME_LIMIT = 1;
-    //   clock.innerText = "01:15";
-    // }
     
     clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardScore, TIME_LIMIT);
 
