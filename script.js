@@ -10,9 +10,9 @@ let numFliped = 0;
 /**
  * Why?
  * ... Write some documentation ...
- * @param {Array} pair 
- * @param {string} dataNick 
- * @param {HTMLElement} target 
+ * @param {Array} pair
+ * @param {string} dataNick
+ * @param {HTMLElement} target
  */
 function onPairLength(pair, dataNick, target) {
   if (pair.length === 0) {
@@ -44,7 +44,7 @@ function onMatchKey() {
 /**
  * Why?
  * ... Write some documentation ...
- * @param {HTMLCollection} children 
+ * @param {HTMLCollection} children
  */
 function onNoMatch(children) {
   numFliped = 2;
@@ -64,53 +64,70 @@ function onNoMatch(children) {
  * Why?
  * Write why choices were made.
  * Don't write what or how. Reading the code will tell us that.
- * @param {HTMLCollection} children 
- * @param {string} pair0 
- * @param {string} pair1 
+ * @param {HTMLCollection} children
+ * @param {string} pair0
+ * @param {string} pair1
  */
 function runMatchLogic(children, pair0, pair1) {
   const noMatch = [
     pair.length === 2,
     pair0 !== pair1,
     pair0 !== "undefined",
-    pair1 !== "undefined"
+    pair1 !== "undefined",
   ];
 
   const matchKey = [
     pair0 === pair1,
     pair0 !== "undefined",
     pair1 !== "undefined",
-    firstKey === secondKey
+    firstKey === secondKey,
   ];
 
-  const match = [
-    pair0 === pair1,
-    pair0 !== "undefined",
-    pair1 !== "undefined"
-  ];
+  const match = [pair0 === pair1, pair0 !== "undefined", pair1 !== "undefined"];
+  ///////////////////////////////////////////////////////////////////////////////////////////HOW DOES THIS WORK?????
+  ///////////////////////////////////////////////////////////////////////////////////////////HOW DO you compare an array of statements above?
 
-  if (noMatch.every(item => item)) {
+  if (noMatch.every((item) => item)) {
     onNoMatch(children);
-  } else if (matchKey.every(item => item)) {
+  } else if (matchKey.every((item) => item)) {
     onMatchKey();
-  } else if (match.every(item => item)) {
+  } else if (match.every((item) => item)) {
     pair = [];
   }
+
+
 }
+
+/**
+ * Separates the conditional checks to see if there is an unwanted situation
+ * for the click event, and if so, return.
+ * 
+ * @param {string} name 
+ * @param {string} dataNick 
+ */
+
+// function returnConditionals(name, dataNick) {
+//   if (name === "container" && dataNick === undefined) {
+//     return;
+//   } else if (name === "box" && dataNick === undefined) {
+//     return;
+//   }
+// }
 
 /**
  * Why?
  * Because we need to take action when the user clicks.
  * Take what actions?
  * ... Write some documentation ...
- * @param {s} e 
+ * @param {s} e
  */
-function onClick (e) {
+function onClick(e) {
   const card = e.target;
   const dataNick = card.dataset.nick;
   const name = card.dataset.name;
   const parent = card.parentElement.parentElement;
 
+  // returnConditionals(name, dataNick);
   if (name === "container" && dataNick === undefined) {
     return;
   } else if (name === "box" && dataNick === undefined) {
@@ -130,62 +147,113 @@ function onClick (e) {
 
 cardContainer.addEventListener("click", onClick);
 
-
 const difficutlyBtns = document.querySelectorAll(".difficulty");
+
+/**
+ * This function adds the losing video and clears the cards off the screen,
+ * and then removes the video after 1.7 seconds.
+ * 
+ * @param {string} body 
+ */
+function losingVideo(body){
+  const loser = document.createElement("div");
+  loser.innerHTML =
+    "<video src='images/loser.mp4' autoplay poster='posterimage.jpg'></video>";
+  loser.classList.add("loser");
+  body.prepend(loser);
+  cardContainer.innerHTML = "";
+  setTimeout(() => {
+      loser.remove();  
+  }, 1700);
+}
+
+/**
+ * Function that adds the winning video and removes it after 1.7 seconds,
+ * as well as resets the clock and click ability for certain buttons.
+ * 
+ * @param {string} body 
+ * @param {string} diff1 
+ * @param {stinrg} diff2 
+ * @param {stinrg} diff3 
+ * @param {stinrg} clockBtn 
+ * @param {stinrg} clock 
+ */
+function winningVideo(body, diff1, diff2, diff3, clockBtn, clock) {
+  const winner = document.createElement("div");
+  winner.innerHTML =
+  "<video src='images/winner.mp4' autoplay poster='posterimage.jpg'></video>";
+  winner.classList.add("loser");
+  body.prepend(winner);
+  cardContainer.innerHTML = "";
+  clockBtn.classList.remove("danger");
+  diff1.style.pointerEvents = "auto";
+  diff2.style.pointerEvents = "auto";
+  diff3.style.pointerEvents = "auto";
+  clockBtn.classList.add("btn-outline-light");
+  clockBtn.classList.remove("btn-outline-danger");
+  clock.innerText = "00:00";
+    setTimeout(() => {
+    winner.remove();
+  }, 1700);
+}
+
+
 
 difficutlyBtns.forEach((item) => {
   item.addEventListener("click", (e) => {
-        let easyScore = sessionStorage.getItem("easyScore");
+    let easyScore = sessionStorage.getItem("easyScore");
     let mediumScore = sessionStorage.getItem("mediumScore");
     let hardScore = sessionStorage.getItem("hardScore");
     let topTime = document.querySelector(".top-time");
+    let diffClass = e.target.classList;
 
-    if (e.target.classList.contains("easy")) {
+    if (diffClass.contains("easy")) {
       if (easyScore === null) {
         topTime.innerText = `TOP TIME:        `;
       } else {
         topTime.innerText = `TOP TIME: ${easyScore}sec`;
       }
     }
-    if (e.target.classList.contains("medium")) {
+    if (diffClass.contains("medium")) {
       if (mediumScore === null) {
         topTime.innerText = `TOP TIME:        `;
       } else {
         topTime.innerText = `TOP TIME: ${mediumScore}sec`;
       }
     }
-    if (e.target.classList.contains("hard")) {
+    if (diffClass.contains("hard")) {
       if (hardScore === null) {
         topTime.innerText = `TOP TIME:        `;
       } else {
         topTime.innerText = `TOP TIME: ${hardScore}sec`;
       }
     }
-        const diff1 = document.querySelector(".diff1");
+    const diff1 = document.querySelector(".diff1");
     const diff2 = document.querySelector(".diff2");
     const diff3 = document.querySelector(".diff3");
 
     diff1.style.pointerEvents = "none";
     diff2.style.pointerEvents = "none";
     diff3.style.pointerEvents = "none";
-        const clock = document.getElementById("timer-label");
+    const clock = document.getElementById("timer-label");
     const clockBtn = document.querySelector(".timer-btn");
     let TIME_LIMIT;
     let timePassed = 0;
     let timeLeft = TIME_LIMIT;
-    
-    if (e.target.classList.contains("easy")) {
-      TIME_LIMIT = 25;
+
+    // TIME WERE SET TO 25, 50, 75
+    if (diffClass.contains("easy")) {
+      TIME_LIMIT = 1;
       clock.innerText = "00:25";
-    } else if (e.target.classList.contains("medium")) {
-      TIME_LIMIT = 50;
+    } else if (diffClass.contains("medium")) {
+      TIME_LIMIT = 60; 
       clock.innerText = "00:50";
-    } else if (e.target.classList.contains("hard")) {
-      TIME_LIMIT = 75;
+    } else if (diffClass.contains("hard")) {
+      TIME_LIMIT = 1;
       clock.innerText = "01:15";
     }
     clockBtn.classList.add("starting");
-    
+
     const timer = setInterval(() => {
       // The amount of time passed increments by one
       timePassed = timePassed += 1;
@@ -193,88 +261,55 @@ difficutlyBtns.forEach((item) => {
       // The time left span is updated
       clock.innerText = `00:${timeLeft}`;
 
-            const body = document.querySelector("body");
-      const winner = document.createElement("div");
+      const body = document.querySelector("body");
+     
       const cards = document.querySelectorAll(".card-box");
 
       let flipCount = 0;
-      let winnerCount = 0;
-
-      winner.innerHTML =
-        "<video src='images/winner.mp4' autoplay poster='posterimage.jpg'></video>";
-      winner.classList.add("loser");
+    
 
       for (var card of cards) {
         if (card.classList.contains("flip")) flipCount++;
       }
       if (flipCount === cards.length) {
-                body.prepend(winner);
+       
+        winningVideo(body, diff1, diff2, diff3, clockBtn, clock);
         clearInterval(timer);
-                let time = timePassed;
+        let time = timePassed;
 
-        if (e.target.classList.contains("easy")) {
+        if (diffClass.contains("easy")) {
           if (easyScore === null || time < easyScore) {
             sessionStorage.setItem("easyScore", `${time}`);
             topTime.innerText = `TOP TIME: ${time}sec`;
           }
         }
-        if (e.target.classList.contains("medium")) {
+        if (diffClass.contains("medium")) {
           if (mediumScore === null || time < mediumScore) {
             sessionStorage.setItem("mediumScore", `${time}`);
             topTime.innerText = `TOP TIME: ${time}sec`;
           }
         }
-        if (e.target.classList.contains("hard")) {
+        if (diffClass.contains("hard")) {
           if (hardScore === null || time < hardScore) {
             sessionStorage.setItem("hardScore", `${time}`);
             topTime.innerText = `TOP TIME: ${time}sec`;
           }
         }
-                const winnerTimer = setInterval(() => {
-          winnerCount++;
-          if (winnerCount === 2) {
-                        cardContainer.innerHTML = "";
-            clockBtn.classList.remove("danger");
-                        winner.remove();
-            clearInterval(winnerTimer);
-                        diff1.style.pointerEvents = "auto";
-            diff2.style.pointerEvents = "auto";
-            diff3.style.pointerEvents = "auto";
-            clockBtn.classList.add("btn-outline-light");
-            clockBtn.classList.remove("btn-outline-danger");
-            clock.innerText = "00:00";
-          }
-        }, 850);
+
       }
 
-            if (timeLeft < 10) {
+      if (timeLeft < 10) {
         clock.innerText = `00:0${timeLeft}`;
         clockBtn.classList.remove("starting");
         clockBtn.classList.add("danger");
       }
 
-            const loser = document.createElement("div");
-      let loserCount = 0;
 
-      loser.innerHTML =
-        "<video src='images/loser.mp4' autoplay poster='posterimage.jpg'></video>";
-      loser.classList.add("loser");
 
       if (timeLeft === 0) {
         clearInterval(timer);
-        body.prepend(loser);
-
-        
-        const loserTimer = setInterval(() => {
-          loserCount++;
-                    cardContainer.innerHTML = "";
-                    if (loserCount === 2) {
-            loser.remove();
-            clearInterval(loserTimer);
-          }
-        }, 850);
-
-                diff1.style.pointerEvents = "auto";
+        losingVideo(body);
+        diff1.style.pointerEvents = "auto";
         diff2.style.pointerEvents = "auto";
         diff3.style.pointerEvents = "auto";
         clockBtn.classList.remove("danger");
@@ -286,12 +321,11 @@ difficutlyBtns.forEach((item) => {
   });
 });
 
-
 const cardLoader = function (e) {
   let testing;
   let inputs = [];
 
-    if (e.target.classList.contains("easy")) {
+  if (e.target.classList.contains("easy")) {
     cardContainer.innerText = "";
     for (var i = 1; i < 5; i++) {
       inputs.push({
@@ -311,7 +345,7 @@ const cardLoader = function (e) {
         </div>`,
       });
     }
-      } else if (e.target.classList.contains("medium")) {
+  } else if (e.target.classList.contains("medium")) {
     cardContainer.innerText = "";
     for (var i = 1; i < 9; i++) {
       inputs.push({
@@ -331,7 +365,7 @@ const cardLoader = function (e) {
           </div>`,
       });
     }
-      } else if (e.target.classList.contains("hard")) {
+  } else if (e.target.classList.contains("hard")) {
     cardContainer.innerText = "";
     for (var i = 1; i < 13; i++) {
       inputs.push({
@@ -352,7 +386,7 @@ const cardLoader = function (e) {
       });
     }
   }
-    let m;
+  let m;
   let t;
   let j;
 
@@ -366,7 +400,7 @@ const cardLoader = function (e) {
     inputs[j] = t;
   }
 
-    for (var i = 0; i < inputs.length; i++) {
+  for (var i = 0; i < inputs.length; i++) {
     let div = document.createElement("div");
     div.classList.add("card-box");
     div.setAttribute("data-name", "box");
