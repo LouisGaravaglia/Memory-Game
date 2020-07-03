@@ -4,17 +4,19 @@ let firstCard;
 let secondCard;
 let firstKey;
 let secondKey;
-let count = 0;
 let numFliped = 0;
 
 /**
- * Why?
- * ... Write some documentation ...
+ * onPairLength will build the pair array by pushing the data-nick attribute each time
+ * the card is clicked. Once there are two items in the array the pair array will 
+ * eventually be reset in order to start the process over again. This array is key 
+ * in order to holding two values needed in order to compare if they are the same or not.
+ * 
  * @param {Array} pair
  * @param {string} dataNick
  * @param {HTMLElement} target
  */
-function onPairLength(pair, dataNick, target) {
+function onPairLength(dataNick, target) {
   if (pair.length === 0) {
     pair.push(dataNick);
     firstCard = target.parentElement;
@@ -29,8 +31,9 @@ function onPairLength(pair, dataNick, target) {
 }
 
 /**
- * No params are being passed b/c of all the globals.
- * google "js polluting global scope".
+ *onMatchKey will toggle the class "flip" in order to hide the cards again, since if
+ this function runs it means that the user clicked on the same card twice, which
+ we know since each card has a unique key.
  */
 function onMatchKey() {
   let timer = setInterval(function () {
@@ -42,8 +45,10 @@ function onMatchKey() {
 }
 
 /**
- * Why?
- * ... Write some documentation ...
+ * function onNoMatch will reduce the pair array back to an empty array, as well 
+ * reset data-fliped attribute back to false in order to keep track of which cards
+ * have been fliped. Only matching cards should keep a data-fliped attribute of true.
+ * 
  * @param {HTMLCollection} children
  */
 function onNoMatch(children) {
@@ -61,9 +66,11 @@ function onNoMatch(children) {
 }
 
 /**
- * Why?
- * Write why choices were made.
- * Don't write what or how. Reading the code will tell us that.
+ * runMatchLogig function will loop over the below arrays of conditionals,
+ * so that if all are true, it will then run further functions. Creating the conditional
+ * log into arrays will condense the conditional statments needed to check to see if
+ * the two clicked cards are unique, and either match or dont match.
+ * 
  * @param {HTMLCollection} children
  * @param {string} pair0
  * @param {string} pair1
@@ -84,8 +91,6 @@ function runMatchLogic(children, pair0, pair1) {
   ];
 
   const match = [pair0 === pair1, pair0 !== "undefined", pair1 !== "undefined"];
-  ///////////////////////////////////////////////////////////////////////////////////////////HOW DOES THIS WORK?????
-  ///////////////////////////////////////////////////////////////////////////////////////////HOW DO you compare an array of statements above?
 
   if (noMatch.every((item) => item)) {
     onNoMatch(children);
@@ -98,28 +103,14 @@ function runMatchLogic(children, pair0, pair1) {
 
 }
 
+
+
 /**
- * Separates the conditional checks to see if there is an unwanted situation
- * for the click event, and if so, return.
+ * Function that will get a hold of the DOM element that was clicked,
+ * in order to know if it was something that we don't care about, in that case return,
+ * otherwise we will start to assign data-attributes to keep track of the cards flipped.
  * 
- * @param {string} name 
- * @param {string} dataNick 
- */
-
-// function returnConditionals(name, dataNick) {
-//   if (name === "container" && dataNick === undefined) {
-//     return;
-//   } else if (name === "box" && dataNick === undefined) {
-//     return;
-//   }
-// }
-
-/**
- * Why?
- * Because we need to take action when the user clicks.
- * Take what actions?
- * ... Write some documentation ...
- * @param {s} e
+ * @param {HTMLElement} e
  */
 function onClick(e) {
   const card = e.target;
@@ -127,7 +118,7 @@ function onClick(e) {
   const name = card.dataset.name;
   const parent = card.parentElement.parentElement;
 
-  // returnConditionals(name, dataNick);
+
   if (name === "container" && dataNick === undefined) {
     return;
   } else if (name === "box" && dataNick === undefined) {
@@ -140,7 +131,7 @@ function onClick(e) {
 
   card.parentElement.setAttribute("data-fliped", "true");
 
-  onPairLength(pair, dataNick, card);
+  onPairLength(dataNick, card);
 
   runMatchLogic(parent.children, pair[0], pair[1]);
 }
@@ -153,11 +144,11 @@ const difficutlyBtns = document.querySelectorAll(".difficulty");
  *   This function adds the losing video and clears the cards off the screen,
  * and then removes the video after 1.7 seconds.
  * 
- * @param {string} body 
- * @param {string} diff1 
- * @param {string} diff2 
- * @param {string} diff3 
- * @param {string} clockBtn 
+ * @param {HTMLElement} body 
+ * @param {HTMLElement} diff1 
+ * @param {HTMLElement} diff2 
+ * @param {HTMLElement} diff3 
+ * @param {HTMLElement} clockBtn 
  */
 function losingVideo(body, diff1, diff2, diff3, clockBtn){
   const loser = document.createElement("div");
@@ -180,12 +171,12 @@ function losingVideo(body, diff1, diff2, diff3, clockBtn){
  * Function that adds the winning video and removes it after 1.7 seconds,
  * as well as resets the clock and click ability for certain buttons.
  * 
- * @param {string} body 
- * @param {string} diff1 
- * @param {stinrg} diff2 
- * @param {stinrg} diff3 
- * @param {stinrg} clockBtn 
- * @param {stinrg} clock 
+ * @param {HTMLElement} body 
+ * @param {HTMLElement} diff1 
+ * @param {HTMLElement} diff2 
+ * @param {HTMLElement} diff3 
+ * @param {HTMLElement} clockBtn 
+ * @param {HTMLElement} clock 
  */
 function winningVideo(body, diff1, diff2, diff3, clockBtn, clock) {
   const winner = document.createElement("div");
@@ -209,12 +200,12 @@ function winningVideo(body, diff1, diff2, diff3, clockBtn, clock) {
  * This function uses setInterval to creating a ticking clock by updating the DOM
  * clock element every second, as well as checking to see if user won or lossed.
  * 
- * @param {string} diffClass 
- * @param {string} clock 
- * @param {string} topTime 
- * @param {string} easyScore 
- * @param {string} mediumScore 
- * @param {string} hardScore 
+ * @param {HTMLElement} diffClass 
+ * @param {HTMLElement} clock 
+ * @param {HTMLElement} topTime 
+ * @param {sessionStorage} easyScore 
+ * @param {sessionStorage} mediumScore 
+ * @param {sessionStorage} hardScore 
  * @param {number} TIME_LIMIT 
  */
 function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardScore, TIME_LIMIT){
@@ -325,6 +316,12 @@ difficutlyBtns.forEach((item) => {
   });
 });
 
+/**
+ * This function will randomize the array of cards (Nick Cage pics).
+ * 
+ * @param {Array} inputs 
+ * @param {HTMLElement} cardContainer 
+ */
 function randomizeCards(inputs, cardContainer) {
   let m;
   let t;
@@ -350,8 +347,12 @@ function randomizeCards(inputs, cardContainer) {
 
 }
 
-
-const cardLoader = function (e) {
+/**
+ * Function that, based on what button is clicked, will build an array of 8, 16, or 24 cards.
+ * 
+ * @param {HTMLElement} e 
+ */
+function cardLoader (e) {
   let testing;
   let inputs = [];
 
@@ -424,7 +425,7 @@ const cardLoader = function (e) {
 
   const easyBtn = document.querySelector(".easy");
   easyBtn.addEventListener("click", cardLoader);
-  
+
   const mediumBtn = document.querySelector(".medium");
   mediumBtn.addEventListener("click", cardLoader);
   const hardBtn = document.querySelector(".hard");
