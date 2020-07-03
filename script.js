@@ -203,7 +203,7 @@ function winningVideo(body, diff1, diff2, diff3, clockBtn, clock) {
 }
 
 
-function clockTicking(diffClass, clockBtn, clock, topTime, easyScore, mediumScore, hardScore, TIME_LIMIT){
+function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardScore, TIME_LIMIT){
 
   const body = document.querySelector("body");
   const cards = document.querySelectorAll(".card-box");
@@ -211,10 +211,12 @@ function clockTicking(diffClass, clockBtn, clock, topTime, easyScore, mediumScor
   const diff1 = document.querySelector(".diff1");
     const diff2 = document.querySelector(".diff2");
     const diff3 = document.querySelector(".diff3");
+    const clockBtn = document.querySelector(".timer-btn");
 
     diff1.style.pointerEvents = "none";
     diff2.style.pointerEvents = "none";
     diff3.style.pointerEvents = "none";
+    clockBtn.classList.add("starting");
 
   let timer = setInterval(() => {
     let flipCount = 0;
@@ -286,8 +288,13 @@ difficutlyBtns.forEach((item) => {
     let hardScore = sessionStorage.getItem("hardScore");
     let topTime = document.querySelector(".top-time");
     let diffClass = e.target.classList;
+    const clock = document.getElementById("timer-label");
+   
+    let TIME_LIMIT;
 
     if (diffClass.contains("easy")) {
+      TIME_LIMIT = 1;
+      clock.innerText = "00:25";
       if (easyScore === null) {
         topTime.innerText = `TOP TIME:        `;
       } else {
@@ -295,6 +302,8 @@ difficutlyBtns.forEach((item) => {
       }
     }
     if (diffClass.contains("medium")) {
+      TIME_LIMIT = 50; 
+      clock.innerText = "00:50";
       if (mediumScore === null) {
         topTime.innerText = `TOP TIME:        `;
       } else {
@@ -302,6 +311,8 @@ difficutlyBtns.forEach((item) => {
       }
     }
     if (diffClass.contains("hard")) {
+      TIME_LIMIT = 1;
+      clock.innerText = "01:15";
       if (hardScore === null) {
         topTime.innerText = `TOP TIME:        `;
       } else {
@@ -309,28 +320,19 @@ difficutlyBtns.forEach((item) => {
       }
     }
 
-    const clock = document.getElementById("timer-label");
-    const clockBtn = document.querySelector(".timer-btn");
-    let TIME_LIMIT;
-    // let timePassed = 0;
-    // let timeLeft = TIME_LIMIT;
-
     // TIME WERE SET TO 25, 50, 75
-    if (diffClass.contains("easy")) {
-      TIME_LIMIT = 1;
-      clock.innerText = "00:25";
-    } else if (diffClass.contains("medium")) {
-      TIME_LIMIT = 50; 
-      clock.innerText = "00:50";
-    } else if (diffClass.contains("hard")) {
-      TIME_LIMIT = 1;
-      clock.innerText = "01:15";
-    }
-    clockBtn.classList.add("starting");
-
-
-   
-    clockTicking(diffClass, clockBtn, clock, topTime, easyScore, mediumScore, hardScore, TIME_LIMIT);
+    // if (diffClass.contains("easy")) {
+    //   TIME_LIMIT = 1;
+    //   clock.innerText = "00:25";
+    // } else if (diffClass.contains("medium")) {
+    //   TIME_LIMIT = 50; 
+    //   clock.innerText = "00:50";
+    // } else if (diffClass.contains("hard")) {
+    //   TIME_LIMIT = 1;
+    //   clock.innerText = "01:15";
+    // }
+    
+    clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardScore, TIME_LIMIT);
 
   });
 });
