@@ -166,7 +166,7 @@ function losingVideo(body, diff1, diff2, diff3, clockBtn){
   diff2.style.pointerEvents = "auto";
   diff3.style.pointerEvents = "auto";
   clockBtn.classList.remove("danger");
-  clockBtn.classList.remove("starting");
+  clockBtn.classList.add("starting");
   setTimeout(() => {
       loser.remove();  
   }, 1700);
@@ -190,12 +190,17 @@ function winningVideo(body, diff1, diff2, diff3, clockBtn, clock) {
   winner.classList.add("loser");
   body.prepend(winner);
   cardContainer.innerHTML = "";
-  clockBtn.classList.remove("danger");
+  // clockBtn.classList.remove("danger");
   diff1.style.pointerEvents = "auto";
   diff2.style.pointerEvents = "auto";
   diff3.style.pointerEvents = "auto";
-  clockBtn.classList.add("btn-outline-light");
-  clockBtn.classList.remove("btn-outline-danger");
+  console.log(clockBtn.classList);
+  clockBtn.classList.remove("danger");
+  clockBtn.classList.add("starting");
+  console.log(clockBtn.classList);
+  // clockBtn.classList.remove("btn-outline-danger");
+  // clockBtn.classList.add("starting");
+  // clockBtn.classList.add("btn-outline-light");
   clock.innerText = "00:00";
     setTimeout(() => {
     winner.remove();
@@ -219,46 +224,36 @@ function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardSco
 
   let timer = setInterval(() => {
     let flipCount = 0;
-   
-    // let timeLeft = TIME_LIMIT;
-    // The amount of time passed increments by one
     timePassed = timePassed += 1;
     timeLeft = TIME_LIMIT - timePassed;
+
     clock.innerText = `00:${timeLeft}`;
     
-    console.log("IN TIMER");
-    
-
    for (var card of cards) {
      if (card.classList.contains("flip")) flipCount++;
    }
+
    if (flipCount === cards.length) {
-    
      winningVideo(body, diff1, diff2, diff3, clockBtn, clock);
      clearInterval(timer);
-     let time = timePassed;
-
      if (diffClass.contains("easy")) {
-       if (easyScore === null || time < easyScore) {
-         sessionStorage.setItem("easyScore", `${time}`);
-         topTime.innerText = `TOP TIME: ${time}sec`;
+       if (easyScore === null || timePassed < easyScore) {
+         sessionStorage.setItem("easyScore", `${timePassed}`);
+         topTime.innerText = `TOP TIME: ${timePassed}sec`;
        }
      }
-
      if (diffClass.contains("medium")) {
-       if (mediumScore === null || time < mediumScore) {
-         sessionStorage.setItem("mediumScore", `${time}`);
-         topTime.innerText = `TOP TIME: ${time}sec`;
+       if (mediumScore === null || timePassed < mediumScore) {
+         sessionStorage.setItem("mediumScore", `${timePassed}`);
+         topTime.innerText = `TOP TIME: ${timePassed}sec`;
        }
      }
-
      if (diffClass.contains("hard")) {
-       if (hardScore === null || time < hardScore) {
-         sessionStorage.setItem("hardScore", `${time}`);
-         topTime.innerText = `TOP TIME: ${time}sec`;
+       if (hardScore === null || timePassed < hardScore) {
+         sessionStorage.setItem("hardScore", `${timePassed}`);
+         topTime.innerText = `TOP TIME: ${timePassed}sec`;
        }
      }
-
    }
 
    if (timeLeft < 10) {
@@ -270,8 +265,7 @@ function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardSco
    if (timeLeft === 0) {
      clearInterval(timer);
      losingVideo(body, diff1, diff2, diff3, clockBtn);
-    //  timePassed = 0;
-    //  timeLeft = TIME_LIMIT;
+
    }
 
  }, 1000);
@@ -290,7 +284,7 @@ difficutlyBtns.forEach((item) => {
     let TIME_LIMIT;
 
     if (diffClass.contains("easy")) {
-      TIME_LIMIT = 1;
+      TIME_LIMIT = 20;
       clock.innerText = "00:25";
       if (easyScore === null) {
         topTime.innerText = `TOP TIME:        `;
@@ -308,7 +302,7 @@ difficutlyBtns.forEach((item) => {
       }
     }
     if (diffClass.contains("hard")) {
-      TIME_LIMIT = 1;
+      TIME_LIMIT = 3;
       clock.innerText = "01:15";
       if (hardScore === null) {
         topTime.innerText = `TOP TIME:        `;
