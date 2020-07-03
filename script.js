@@ -165,8 +165,8 @@ function losingVideo(body, diff1, diff2, diff3, clockBtn){
   diff1.style.pointerEvents = "auto";
   diff2.style.pointerEvents = "auto";
   diff3.style.pointerEvents = "auto";
-  clockBtn.classList.remove("danger");
-  clockBtn.classList.add("starting");
+  clockBtn.classList.toggle("danger");
+  // clockBtn.classList.add("starting");
   setTimeout(() => {
       loser.remove();  
   }, 1700);
@@ -190,17 +190,11 @@ function winningVideo(body, diff1, diff2, diff3, clockBtn, clock) {
   winner.classList.add("loser");
   body.prepend(winner);
   cardContainer.innerHTML = "";
-  // clockBtn.classList.remove("danger");
   diff1.style.pointerEvents = "auto";
   diff2.style.pointerEvents = "auto";
   diff3.style.pointerEvents = "auto";
-  console.log(clockBtn.classList);
   clockBtn.classList.remove("danger");
   clockBtn.classList.add("starting");
-  console.log(clockBtn.classList);
-  // clockBtn.classList.remove("btn-outline-danger");
-  // clockBtn.classList.add("starting");
-  // clockBtn.classList.add("btn-outline-light");
   clock.innerText = "00:00";
     setTimeout(() => {
     winner.remove();
@@ -260,6 +254,7 @@ function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardSco
      clock.innerText = `00:0${timeLeft}`;
      clockBtn.classList.remove("starting");
      clockBtn.classList.add("danger");
+    
    }
 
    if (timeLeft === 0) {
