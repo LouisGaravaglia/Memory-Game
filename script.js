@@ -150,10 +150,14 @@ cardContainer.addEventListener("click", onClick);
 const difficutlyBtns = document.querySelectorAll(".difficulty");
 
 /**
- * This function adds the losing video and clears the cards off the screen,
+ *   This function adds the losing video and clears the cards off the screen,
  * and then removes the video after 1.7 seconds.
  * 
  * @param {string} body 
+ * @param {string} diff1 
+ * @param {string} diff2 
+ * @param {string} diff3 
+ * @param {string} clockBtn 
  */
 function losingVideo(body, diff1, diff2, diff3, clockBtn){
   const loser = document.createElement("div");
@@ -201,7 +205,18 @@ function winningVideo(body, diff1, diff2, diff3, clockBtn, clock) {
   }, 1700);
 }
 
-
+/**
+ * This function uses setInterval to creating a ticking clock by updating the DOM
+ * clock element every second, as well as checking to see if user won or lossed.
+ * 
+ * @param {string} diffClass 
+ * @param {string} clock 
+ * @param {string} topTime 
+ * @param {string} easyScore 
+ * @param {string} mediumScore 
+ * @param {string} hardScore 
+ * @param {number} TIME_LIMIT 
+ */
 function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardScore, TIME_LIMIT){
   const body = document.querySelector("body");
   const cards = document.querySelectorAll(".card-box");
@@ -267,7 +282,6 @@ function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardSco
 
 }
 
-
 difficutlyBtns.forEach((item) => {
   item.addEventListener("click", (e) => {
     const easyScore = sessionStorage.getItem("easyScore");
@@ -310,6 +324,32 @@ difficutlyBtns.forEach((item) => {
 
   });
 });
+
+function randomizeCards(inputs, cardContainer) {
+  let m;
+  let t;
+  let j;
+
+  for (var i = 0; i < inputs.length; i++) {
+    m = inputs.length;
+    m--;
+    j = Math.floor(Math.random() * m);
+
+    t = inputs[m];
+    inputs[m] = inputs[j];
+    inputs[j] = t;
+  }
+
+  for (var i = 0; i < inputs.length; i++) {
+    let div = document.createElement("div");
+    div.classList.add("card-box");
+    div.setAttribute("data-name", "box");
+    div.innerHTML = inputs[i].task;
+    cardContainer.appendChild(div);
+  }
+
+}
+
 
 const cardLoader = function (e) {
   let testing;
@@ -376,32 +416,18 @@ const cardLoader = function (e) {
       });
     }
   }
-  let m;
-  let t;
-  let j;
 
-  for (var i = 0; i < inputs.length; i++) {
-    m = inputs.length;
-    m--;
-    j = Math.floor(Math.random() * m);
+  randomizeCards(inputs, cardContainer);
 
-    t = inputs[m];
-    inputs[m] = inputs[j];
-    inputs[j] = t;
-  }
-
-  for (var i = 0; i < inputs.length; i++) {
-    let div = document.createElement("div");
-    div.classList.add("card-box");
-    div.setAttribute("data-name", "box");
-    div.innerHTML = inputs[i].task;
-    cardContainer.appendChild(div);
-  }
 };
 
-const easyBtn = document.querySelector(".easy");
-easyBtn.addEventListener("click", cardLoader);
-const mediumBtn = document.querySelector(".medium");
-mediumBtn.addEventListener("click", cardLoader);
-const hardBtn = document.querySelector(".hard");
-hardBtn.addEventListener("click", cardLoader);
+
+  const easyBtn = document.querySelector(".easy");
+  easyBtn.addEventListener("click", cardLoader);
+  
+  const mediumBtn = document.querySelector(".medium");
+  mediumBtn.addEventListener("click", cardLoader);
+  const hardBtn = document.querySelector(".hard");
+  hardBtn.addEventListener("click", cardLoader);
+
+
