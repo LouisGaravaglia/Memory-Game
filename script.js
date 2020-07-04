@@ -6,6 +6,7 @@ let firstKey;
 let secondKey;
 let numFliped = 0;
 
+
 /**
  * onPairLength will build the pair array by pushing the data-nick attribute each time
  * the card is clicked. Once there are two items in the array the pair array will 
@@ -30,6 +31,7 @@ function onPairLength(dataNick, target) {
   }
 }
 
+
 /**
  *onMatchKey will toggle the class "flip" in order to hide the cards again, since if
  this function runs it means that the user clicked on the same card twice, which
@@ -43,6 +45,7 @@ function onMatchKey() {
   }, 700);
   pair = [];
 }
+
 
 /**
  * function onNoMatch will reduce the pair array back to an empty array, as well 
@@ -64,6 +67,7 @@ function onNoMatch(children) {
     clearInterval(timer);
   }, 700);
 }
+
 
 /**
  * runMatchLogig function will loop over the below arrays of conditionals,
@@ -99,10 +103,7 @@ function runMatchLogic(children, pair0, pair1) {
   } else if (match.every((item) => item)) {
     pair = [];
   }
-
-
 }
-
 
 
 /**
@@ -117,7 +118,6 @@ function onClick(e) {
   const dataNick = card.dataset.nick;
   const name = card.dataset.name;
   const parent = card.parentElement.parentElement;
-
 
   if (name === "container" && dataNick === undefined) {
     return;
@@ -140,6 +140,7 @@ cardContainer.addEventListener("click", onClick);
 
 const difficutlyBtns = document.querySelectorAll(".difficulty");
 
+
 /**
  *   This function adds the losing video and clears the cards off the screen,
  * and then removes the video after 1.7 seconds.
@@ -150,7 +151,7 @@ const difficutlyBtns = document.querySelectorAll(".difficulty");
  * @param {HTMLElement} diff3 
  * @param {HTMLElement} clockBtn 
  */
-function losingVideo(body, diff1, diff2, diff3, clockBtn){
+function losingVideo(body, diff1, diff2, diff3, clockBtn) {
   const loser = document.createElement("div");
   loser.innerHTML =
     "<video src='images/loser.mp4' autoplay poster='posterimage.jpg'></video>";
@@ -163,9 +164,10 @@ function losingVideo(body, diff1, diff2, diff3, clockBtn){
   clockBtn.classList.toggle("danger");
   // clockBtn.classList.add("starting");
   setTimeout(() => {
-      loser.remove();  
+    loser.remove();
   }, 1700);
 }
+
 
 /**
  * Function that adds the winning video and removes it after 1.7 seconds,
@@ -181,7 +183,7 @@ function losingVideo(body, diff1, diff2, diff3, clockBtn){
 function winningVideo(body, diff1, diff2, diff3, clockBtn, clock) {
   const winner = document.createElement("div");
   winner.innerHTML =
-  "<video src='images/winner.mp4' autoplay poster='posterimage.jpg'></video>";
+    "<video src='images/winner.mp4' autoplay poster='posterimage.jpg'></video>";
   winner.classList.add("loser");
   body.prepend(winner);
   cardContainer.innerHTML = "";
@@ -191,10 +193,11 @@ function winningVideo(body, diff1, diff2, diff3, clockBtn, clock) {
   clockBtn.classList.remove("danger");
   clockBtn.classList.add("starting");
   clock.innerText = "00:00";
-    setTimeout(() => {
+  setTimeout(() => {
     winner.remove();
   }, 1700);
 }
+
 
 /**
  * This function uses setInterval to creating a ticking clock by updating the DOM
@@ -208,19 +211,19 @@ function winningVideo(body, diff1, diff2, diff3, clockBtn, clock) {
  * @param {sessionStorage} hardScore 
  * @param {number} TIME_LIMIT 
  */
-function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardScore, TIME_LIMIT){
+function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardScore, TIME_LIMIT) {
   const body = document.querySelector("body");
   const cards = document.querySelectorAll(".card-box");
   let timePassed = 0;
   const diff1 = document.querySelector(".diff1");
-    const diff2 = document.querySelector(".diff2");
-    const diff3 = document.querySelector(".diff3");
-    const clockBtn = document.querySelector(".timer-btn");
+  const diff2 = document.querySelector(".diff2");
+  const diff3 = document.querySelector(".diff3");
+  const clockBtn = document.querySelector(".timer-btn");
 
-    diff1.style.pointerEvents = "none";
-    diff2.style.pointerEvents = "none";
-    diff3.style.pointerEvents = "none";
-    clockBtn.classList.add("starting");
+  diff1.style.pointerEvents = "none";
+  diff2.style.pointerEvents = "none";
+  diff3.style.pointerEvents = "none";
+  clockBtn.classList.add("starting");
 
   let timer = setInterval(() => {
     let flipCount = 0;
@@ -228,51 +231,52 @@ function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardSco
     timeLeft = TIME_LIMIT - timePassed;
 
     clock.innerText = `00:${timeLeft}`;
-    
-   for (var card of cards) {
-     if (card.classList.contains("flip")) flipCount++;
-   }
 
-   if (flipCount === cards.length) {
-     timeLeft = 0;
-     winningVideo(body, diff1, diff2, diff3, clockBtn, clock);
-     clearInterval(timer);
-     if (diffClass.contains("easy")) {
-       if (easyScore === null || timePassed < easyScore) {
-         sessionStorage.setItem("easyScore", `${timePassed}`);
-         topTime.innerText = `TOP TIME: ${timePassed}sec`;
-       }
-     }
-     if (diffClass.contains("medium")) {
-       if (mediumScore === null || timePassed < mediumScore) {
-         sessionStorage.setItem("mediumScore", `${timePassed}`);
-         topTime.innerText = `TOP TIME: ${timePassed}sec`;
-       }
-     }
-     if (diffClass.contains("hard")) {
-       if (hardScore === null || timePassed < hardScore) {
-         sessionStorage.setItem("hardScore", `${timePassed}`);
-         topTime.innerText = `TOP TIME: ${timePassed}sec`;
-       }
-     }
-   }
+    for (var card of cards) {
+      if (card.classList.contains("flip")) flipCount++;
+    }
 
-   if (timeLeft < 10) {
-     clock.innerText = `00:0${timeLeft}`;
-     clockBtn.classList.remove("starting");
-     clockBtn.classList.add("danger");
-    
-   }
+    if (flipCount === cards.length) {
+      timeLeft = 0;
+      winningVideo(body, diff1, diff2, diff3, clockBtn, clock);
+      clearInterval(timer);
+      if (diffClass.contains("easy")) {
+        if (easyScore === null || timePassed < easyScore) {
+          sessionStorage.setItem("easyScore", `${timePassed}`);
+          topTime.innerText = `TOP TIME: ${timePassed}sec`;
+        }
+      }
+      if (diffClass.contains("medium")) {
+        if (mediumScore === null || timePassed < mediumScore) {
+          sessionStorage.setItem("mediumScore", `${timePassed}`);
+          topTime.innerText = `TOP TIME: ${timePassed}sec`;
+        }
+      }
+      if (diffClass.contains("hard")) {
+        if (hardScore === null || timePassed < hardScore) {
+          sessionStorage.setItem("hardScore", `${timePassed}`);
+          topTime.innerText = `TOP TIME: ${timePassed}sec`;
+        }
+      }
+    }
 
-   if (timeLeft === 0) {
-     clearInterval(timer);
-     losingVideo(body, diff1, diff2, diff3, clockBtn);
+    if (timeLeft < 10) {
+      clock.innerText = `00:0${timeLeft}`;
+      clockBtn.classList.remove("starting");
+      clockBtn.classList.add("danger");
 
-   }
+    }
 
- }, 1000);
+    if (timeLeft === 0) {
+      clearInterval(timer);
+      losingVideo(body, diff1, diff2, diff3, clockBtn);
+
+    }
+
+  }, 1000);
 
 }
+
 
 difficutlyBtns.forEach((item) => {
   item.addEventListener("click", (e) => {
@@ -294,7 +298,7 @@ difficutlyBtns.forEach((item) => {
       }
     }
     if (diffClass.contains("medium")) {
-      TIME_LIMIT = 40; 
+      TIME_LIMIT = 40;
       clock.innerText = "00:40";
       if (mediumScore === null) {
         topTime.innerText = `TOP TIME:        `;
@@ -311,11 +315,12 @@ difficutlyBtns.forEach((item) => {
         topTime.innerText = `TOP TIME: ${hardScore}sec`;
       }
     }
-    
+
     clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardScore, TIME_LIMIT);
 
   });
 });
+
 
 /**
  * This function will randomize the array of cards (Nick Cage pics).
@@ -331,6 +336,8 @@ function randomizeCards(inputs, cardContainer) {
   for (var i = 0; i < inputs.length; i++) {
     m = inputs.length;
     m--;
+
+
     j = Math.floor(Math.random() * m);
 
     t = inputs[m];
@@ -345,15 +352,15 @@ function randomizeCards(inputs, cardContainer) {
     div.innerHTML = inputs[i].task;
     cardContainer.appendChild(div);
   }
-
 }
+
 
 /**
  * Function that, based on what button is clicked, will build an array of 8, 16, or 24 cards.
  * 
  * @param {HTMLElement} e 
  */
-function cardLoader (e) {
+function cardLoader(e) {
   let testing;
   let inputs = [];
 
@@ -423,13 +430,10 @@ function cardLoader (e) {
 
 };
 
+const easyBtn = document.querySelector(".easy");
+easyBtn.addEventListener("click", cardLoader);
 
-  const easyBtn = document.querySelector(".easy");
-  easyBtn.addEventListener("click", cardLoader);
-
-  const mediumBtn = document.querySelector(".medium");
-  mediumBtn.addEventListener("click", cardLoader);
-  const hardBtn = document.querySelector(".hard");
-  hardBtn.addEventListener("click", cardLoader);
-
-
+const mediumBtn = document.querySelector(".medium");
+mediumBtn.addEventListener("click", cardLoader);
+const hardBtn = document.querySelector(".hard");
+hardBtn.addEventListener("click", cardLoader);
