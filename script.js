@@ -6,6 +6,7 @@ let firstKey;
 let secondKey;
 let numFliped = 0;
 
+
 /**
  * onPairLength will build the pair array by pushing the data-nick attribute each time
  * the card is clicked. Once there are two items in the array the pair array will 
@@ -30,6 +31,7 @@ function onPairLength(dataNick, target) {
   }
 }
 
+
 /**
  *onMatchKey will toggle the class "flip" in order to hide the cards again, since if
  this function runs it means that the user clicked on the same card twice, which
@@ -43,6 +45,7 @@ function onMatchKey() {
   }, 700);
   pair = [];
 }
+
 
 /**
  * function onNoMatch will reduce the pair array back to an empty array, as well 
@@ -64,6 +67,7 @@ function onNoMatch(children) {
     clearInterval(timer);
   }, 700);
 }
+
 
 /**
  * runMatchLogig function will loop over the below arrays of conditionals,
@@ -99,10 +103,7 @@ function runMatchLogic(children, pair0, pair1) {
   } else if (match.every((item) => item)) {
     pair = [];
   }
-
-
 }
-
 
 
 /**
@@ -117,7 +118,6 @@ function onClick(e) {
   const dataNick = card.dataset.nick;
   const name = card.dataset.name;
   const parent = card.parentElement.parentElement;
-
 
   if (name === "container" && dataNick === undefined) {
     return;
@@ -139,6 +139,7 @@ function onClick(e) {
 cardContainer.addEventListener("click", onClick);
 
 const difficutlyBtns = document.querySelectorAll(".difficulty");
+
 
 /**
  *   This function adds the losing video and clears the cards off the screen,
@@ -166,6 +167,7 @@ function losingVideo(body, diff1, diff2, diff3, clockBtn) {
     loser.remove();
   }, 1700);
 }
+
 
 /**
  * Function that adds the winning video and removes it after 1.7 seconds,
@@ -195,6 +197,7 @@ function winningVideo(body, diff1, diff2, diff3, clockBtn, clock) {
     winner.remove();
   }, 1700);
 }
+
 
 /**
  * This function uses setInterval to creating a ticking clock by updating the DOM
@@ -274,6 +277,7 @@ function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardSco
 
 }
 
+
 difficutlyBtns.forEach((item) => {
   item.addEventListener("click", (e) => {
     const easyScore = sessionStorage.getItem("easyScore");
@@ -317,6 +321,7 @@ difficutlyBtns.forEach((item) => {
   });
 });
 
+
 /**
  * This function will randomize the array of cards (Nick Cage pics).
  * 
@@ -347,8 +352,8 @@ function randomizeCards(inputs, cardContainer) {
     div.innerHTML = inputs[i].task;
     cardContainer.appendChild(div);
   }
-
 }
+
 
 /**
  * Function that, based on what button is clicked, will build an array of 8, 16, or 24 cards.
@@ -424,7 +429,6 @@ function cardLoader(e) {
   randomizeCards(inputs, cardContainer);
 
 };
-
 
 const easyBtn = document.querySelector(".easy");
 easyBtn.addEventListener("click", cardLoader);
