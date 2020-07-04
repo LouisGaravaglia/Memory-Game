@@ -40,7 +40,7 @@ function onMatchKey() {
     firstCard.classList.toggle("flip");
     secondCard.classList.toggle("flip");
     clearInterval(timer);
-  }, 1000);
+  }, 700);
   pair = [];
 }
 
@@ -62,7 +62,7 @@ function onNoMatch(children) {
     pair = [];
     numFliped = 0;
     clearInterval(timer);
-  }, 1000);
+  }, 700);
 }
 
 /**
@@ -234,6 +234,7 @@ function clockTicking(diffClass, clock, topTime, easyScore, mediumScore, hardSco
    }
 
    if (flipCount === cards.length) {
+     timeLeft = 0;
      winningVideo(body, diff1, diff2, diff3, clockBtn, clock);
      clearInterval(timer);
      if (diffClass.contains("easy")) {
@@ -284,7 +285,7 @@ difficutlyBtns.forEach((item) => {
     let TIME_LIMIT;
 
     if (diffClass.contains("easy")) {
-      TIME_LIMIT = 20;
+      TIME_LIMIT = 25;
       clock.innerText = "00:25";
       if (easyScore === null) {
         topTime.innerText = `TOP TIME:        `;
@@ -293,8 +294,8 @@ difficutlyBtns.forEach((item) => {
       }
     }
     if (diffClass.contains("medium")) {
-      TIME_LIMIT = 50; 
-      clock.innerText = "00:50";
+      TIME_LIMIT = 40; 
+      clock.innerText = "00:40";
       if (mediumScore === null) {
         topTime.innerText = `TOP TIME:        `;
       } else {
@@ -302,8 +303,8 @@ difficutlyBtns.forEach((item) => {
       }
     }
     if (diffClass.contains("hard")) {
-      TIME_LIMIT = 3;
-      clock.innerText = "01:15";
+      TIME_LIMIT = 50;
+      clock.innerText = "00:50";
       if (hardScore === null) {
         topTime.innerText = `TOP TIME:        `;
       } else {
